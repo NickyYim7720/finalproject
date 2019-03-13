@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ToDoList</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_notifications">Notifications</string>
+    <string name="menu_list">List</string>
+    <string name="btn_login">Login</string>
+    <string name="menu_logout">Logout</string>
+</resources>
