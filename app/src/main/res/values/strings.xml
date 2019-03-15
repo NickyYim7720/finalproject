@@ -5,4 +5,6 @@
     <string name="menu_list">List</string>
     <string name="btn_login">Login</string>
     <string name="menu_logout">Logout</string>
+    <string name="contentDesc">TODO</string>
+    <string name="fp_hints">Place your finger on the picture</string>
 </resources>
