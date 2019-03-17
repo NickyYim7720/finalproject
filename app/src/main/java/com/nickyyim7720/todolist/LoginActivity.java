@@ -1,38 +1,22 @@
 package com.nickyyim7720.todolist;
 
+import android.Manifest;
 import android.app.KeyguardManager;
+import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
-import android.security.keystore.KeyGenParameterSpec;
-import android.security.keystore.KeyProperties;
+import android.os.CancellationSignal;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
 
 public class LoginActivity extends AppCompatActivity {
 
     private static String TAG = "LoginActivity===>";
     private String login_code;
-    private KeyStore kyStore;
-    private static final String KEY_NAME="finalProject_fp";
-    private Cipher cipher;
+    private FingerprintManager fpM;
+    private KeyguardManager kygM;
+    private CancellationSignal cancellationSignal;
     private TextView txtV;
 
     @Override
@@ -42,111 +26,74 @@ public class LoginActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate()");
 
-        KeyguardManager kygM = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
-        FingerprintManager fpM = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
+        kygM = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+        fpM = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
 
-        if(!fpM.isHardwareDetected()){
-            Toast.makeText(this, "FIngerprint authentioation permission not enable", Toast.LENGTH_SHORT).show();
+        if (!kygM.isKeyguardSecure()){
+            //check the fingerprint screen lock able
+            Log.d(TAG, "!isKeyguardSecure()");
+            return;
+        }
 
-        }else{
-            if(!fpM.hasEnrolledFingerprints()){
-                Toast.makeText(this, "Register at least one finerprint", Toast.LENGTH_SHORT).show();
+        if (checkSelfPermission(Manifest.permission.USE_FINGERPRINT) == PackageManager.PERMISSION_GRANTED){
+            if (!fpM.isHardwareDetected()){
+                //check hardware contant the fingerprint hardware
+                Log.d(TAG, "!isHardwareDetected()");
+                return;
+            }
 
-            }else{
-                if(!kygM.isKeyguardSecure()){
-                    Toast.makeText(this, "Lock screen seurity not enabled in Settings", Toast.LENGTH_SHORT).show();
-                }else{
-                    genKey();
-
-                }
-                if(cipherInit()){
-                    FingerprintManager.CryptoObject cryptoObject = new FingerprintManager.CryptoObject(cipher);
-                    FingerprintHandler helper = new FingerprintHandler(this);
-                    helper.startAuthentication(fpM, cryptoObject);
-                }
+            if (!fpM.hasEnrolledFingerprints()){
+                //check device at least has one fingerprint record
+                Log.d(TAG, "!hasEnrolledFingerprints()");
+                return;
             }
         }
-    }
+        startFingerprintListening();
 
-    private boolean cipherInit(){
-        try{
-            cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES+"/"+KeyProperties.BLOCK_MODE_CBC+"/"+KeyProperties.ENCRYPTION_PADDING_PKCS7);
-
-        }catch (NoSuchAlgorithmException e){
-            e.printStackTrace();
-        }catch (NoSuchPaddingException e){
-            e.printStackTrace();
-
-            try{
-                kyStore.load(null);
-                SecretKey key = (SecretKey)kyStore.getKey(KEY_NAME,null);
-                cipher.init(Cipher.ENCRYPT_MODE, key);
-                return true;
-            }catch (IOException el){
-                el.printStackTrace();
-                return false;
-            }catch (NoSuchAlgorithmException el){
-                el.printStackTrace();
-                return false;
-            }catch (CertificateException el){
-                el.printStackTrace();
-                return false;
-            }catch (UnrecoverableKeyException el){
-                el.printStackTrace();
-                return false;
-            }catch (InvalidKeyException el){
-                el.printStackTrace();
-                return false;
-            }catch (KeyStoreException el){
-                el.printStackTrace();
-                return false;
-            }
-        }
-        return false;
-    }
-
-    private void genKey(){
-        try{
-            kyStore = KeyStore.getInstance("AndroidKeyStore");
-        }catch (KeyStoreException e){
-            e.printStackTrace();
-        }
-
-        KeyGenerator keyGenerator = null;
-
-        try {
-            keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStoore");
-        }catch (NoSuchAlgorithmException e){
-            e.printStackTrace();
-        }catch (NoSuchProviderException e){
-            e.printStackTrace();
-        }
-
-        try{
-            kyStore.load(null);
-            keyGenerator.init(new KeyGenParameterSpec.Builder(KEY_NAME,KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT).setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-            .setUserAuthenticationRequired(true)
-            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7).build()
-            );
-            keyGenerator.generateKey();
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (NoSuchAlgorithmException e){
-            e.printStackTrace();
-        }catch (CertificateException e){
-            e.printStackTrace();
-        }catch (InvalidAlgorithmParameterException e){
-            e.printStackTrace();
-        }
 
     }
 
-    public void btnLoginClick(View v){
-        Log.d(TAG, "btnLoginClick()");
+    private void startFingerprintListening(){
+        cancellationSignal = new CancellationSignal();
+        if (checkSelfPermission(Manifest.permission.USE_FINGERPRINT) == PackageManager.PERMISSION_GRANTED){
+            fpM.authenticate(null, //wrapper class of crypto objects, it makes authentication more safty.
+                              cancellationSignal, //for cancel authenticate object
+                             0, //optional flags; should be 0
+                              authenticationCallback, //callback for receive the authenticate success or fail
+                             null); //optional value, if it able to use, fingerprintmanager will though it for sending message.
+        }
+    }
+
+    FingerprintManager.AuthenticationCallback authenticationCallback = new FingerprintManager.AuthenticationCallback(){
+        @Override
+        public void onAuthenticationError(int errorCode, CharSequence errString){
+            Log.d(TAG, "onAuthenticationError");
+        }
+
+        @Override
+        public void onAuthenticationFailed(){
+            Log.d(TAG, "onAuthenticationFailed");
+        }
+
+        @Override
+        public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result){
+            Log.d(TAG, "onAuthenticationSucceeded");
+            login();
+        }
+
+    };
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        cancellationSignal.cancel();
+        cancellationSignal = null;
+    }
+
+    public void login(){
+        Log.d(TAG, "login()");
         Model.setPref("LOGIN_CODE", "1", getApplicationContext());
         this.finish();
     }
-
-
 
 }

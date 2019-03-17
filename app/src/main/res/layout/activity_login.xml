@@ -13,15 +13,6 @@
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="706dp">
 
-        <ImageView
-            android:id="@+id/img_finger"
-            android:layout_width="match_parent"
-            android:layout_height="613dp"
-            android:background="@color/colorPrimaryDark"
-            android:contentDescription="@string/contentDesc"
-            app:srcCompat="@drawable/ic_launcher_background"
-            tools:ignore="VectorDrawableCompat" />
-
         <TextView
             android:id="@+id/txt_hints"
             android:layout_width="match_parent"
@@ -31,12 +22,14 @@
             android:textSize="24sp"
             android:textStyle="bold|italic" />
 
-        <Button
-            android:id="@+id/btn_login"
+        <ImageView
+            android:id="@+id/img_finger"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="btnLoginClick"
-            android:text="@string/btn_login" />
+            android:layout_height="613dp"
+            android:background="@color/colorPrimaryDark"
+            android:contentDescription="@string/contentDesc"
+            app:srcCompat="@drawable/ic_launcher_background"
+            tools:ignore="VectorDrawableCompat" />
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
