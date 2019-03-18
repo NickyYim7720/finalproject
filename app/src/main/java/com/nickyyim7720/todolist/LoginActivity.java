@@ -9,6 +9,9 @@ import android.os.CancellationSignal;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -32,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         if (!kygM.isKeyguardSecure()){
             //check the fingerprint screen lock able
             Log.d(TAG, "!isKeyguardSecure()");
+            Toast.makeText(this, "Your smartphone haven't setting the fingerprint lock", LENGTH_SHORT).show();
             return;
         }
 
@@ -39,12 +43,14 @@ public class LoginActivity extends AppCompatActivity {
             if (!fpM.isHardwareDetected()){
                 //check hardware contant the fingerprint hardware
                 Log.d(TAG, "!isHardwareDetected()");
+                Toast.makeText(this, "Your smartphone haven't install the fingerprint lock", LENGTH_SHORT).show();
                 return;
             }
 
             if (!fpM.hasEnrolledFingerprints()){
                 //check device at least has one fingerprint record
                 Log.d(TAG, "!hasEnrolledFingerprints()");
+                Toast.makeText(this, "Your smartphone haven't set the fingerprint record", LENGTH_SHORT).show();
                 return;
             }
         }
