@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.d(TAG, "onCreate()");
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void init(){
         login_code = Model.getPref("LOGIN_CODE", getApplicationContext());
+        Log.d(TAG, "login_code = " + Model.getPref("LOGIN_CODE", getApplicationContext()));
         if (login_code.matches("") || login_code.matches("0")){
             Model.setPref("LOGIN_CODE", "0", getApplicationContext());
             login_code = "0";

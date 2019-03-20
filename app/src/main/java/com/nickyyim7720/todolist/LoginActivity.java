@@ -10,6 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.content.Intent;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -35,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         if (!kygM.isKeyguardSecure()){
             //check the fingerprint screen lock able
             Log.d(TAG, "!isKeyguardSecure()");
-            Toast.makeText(this, "Your smartphone haven't setting the fingerprint lock", LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.fp_lock_disable), LENGTH_SHORT).show();
             return;
         }
 
@@ -43,14 +46,14 @@ public class LoginActivity extends AppCompatActivity {
             if (!fpM.isHardwareDetected()){
                 //check hardware contant the fingerprint hardware
                 Log.d(TAG, "!isHardwareDetected()");
-                Toast.makeText(this, "Your smartphone haven't install the fingerprint lock", LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.fp_hardware_disable), LENGTH_SHORT).show();
                 return;
             }
 
             if (!fpM.hasEnrolledFingerprints()){
                 //check device at least has one fingerprint record
                 Log.d(TAG, "!hasEnrolledFingerprints()");
-                Toast.makeText(this, "Your smartphone haven't set the fingerprint record", LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.fp_record_null), Toast.LENGTH_SHORT).show();
                 return;
             }
         }
@@ -98,8 +101,30 @@ public class LoginActivity extends AppCompatActivity {
 
     public void login(){
         Log.d(TAG, "login()");
-        Model.setPref("LOGIN_CODE", "1", getApplicationContext());
-        this.finish();
+        ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = connManager.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnected()){
+            Log.d(TAG, "login()->network OK");
+            String _userid = "1";
+            String _password = "1234";
+            String _server = "http://10.101.51.30/php/login.php";
+
+            try{
+               new loginAST(getApplicationContext()).execute(_server, _userid, _password);
+               if (Model.getPref("LOGIN_CODE", getApplicationContext()).matches("1")){
+                   startActivity(new Intent(this, MainActivity.class));
+                   this.finish();
+               }else{
+
+               }
+            }catch (SecurityException e){
+                e.printStackTrace();
+            }
+        }else{
+            Log.d(TAG, "no network");
+            Toast.makeText(this, getResources().getString(R.string.msg_network_disconnect), Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 }

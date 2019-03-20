@@ -6,5 +6,9 @@
     <string name="btn_login">Login</string>
     <string name="menu_logout">Logout</string>
     <string name="contentDesc">TODO</string>
+    <string name="msg_network_disconnect">Network is disconnected</string>
     <string name="fp_hints">Place your finger on the picture</string>
+    <string name="fp_lock_disable">Your smartphone have not setting the fingerprint lock</string>
+    <string name="fp_hardware_disable">Your smartphone have not install the fingerprint lock</string>
+    <string name="fp_record_null">Your smartphone have not set the fingerprint record</string>
 </resources>
