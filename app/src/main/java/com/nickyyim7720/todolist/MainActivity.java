@@ -7,12 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.support.v4.app.FragmentTransaction;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
     private static String TAG = "MainActivity===>";
     private String login_code;
+    private FragmentTransaction ft;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -21,18 +23,16 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mTextMessage.setText(R.string.menu_home);
+                    mTextMessage.setText(R.string.PI);
                     return true;
                 case R.id.navigation_list:
-                    mTextMessage.setText(R.string.menu_list);
+                    mTextMessage.setText(R.string.ToDoList);
                     return true;
                 case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.menu_notifications);
+                    mTextMessage.setText(R.string.Setting);
                     return true;
                 case R.id.navigation_logout:
-                    Model.setPref("LOGIN_CODE", "0", getApplicationContext());
-                    Log.d(TAG, "nav selected logout" + Model.getPref("LOGIN_CODE", getApplicationContext()));
-                    init();
+                    logout();
                     return true;
             }
             return false;
@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        Model.setPref("Uname", "1", getApplicationContext());
         init();
     }
 
@@ -60,13 +61,17 @@ public class MainActivity extends AppCompatActivity {
             login_code = "0";
             startActivity(new Intent(this, LoginActivity.class));
         }else if (login_code.matches("1")){
-            //Do nothing.
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.add(R.id.fragment_container, new HomeFragment());
+            ft.commit();
         }
     }
 
     // ==== Logout ====
     public void logout(){
         Log.d(TAG, "logout()");
+        Model.setPref("LOGIN_CODE", "0", getApplicationContext());
+        Model.setPref("UNAME", "", getApplicationContext());
         startActivity(new Intent(this, LoginActivity.class));
     }
 

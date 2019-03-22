@@ -3,7 +3,6 @@
     <string name="menu_home">Home</string>
     <string name="menu_notifications">Notifications</string>
     <string name="menu_list">List</string>
-    <string name="btn_login">Login</string>
     <string name="menu_logout">Logout</string>
     <string name="contentDesc">TODO</string>
     <string name="msg_network_disconnect">Network is disconnected</string>
@@ -11,4 +10,10 @@
     <string name="fp_lock_disable">Your smartphone have not setting the fingerprint lock</string>
     <string name="fp_hardware_disable">Your smartphone have not install the fingerprint lock</string>
     <string name="fp_record_null">Your smartphone have not set the fingerprint record</string>
+
+    <string name="PI">Persional Information</string>
+    <string name="ToDoList">What you have to do</string>
+    <string name="Setting">Setting</string>
+    <string name="user_name">Guest</string>
+    <string name="fp_code">-</string>
 </resources>

@@ -22,6 +22,14 @@
             android:textSize="24sp"
             android:textStyle="bold|italic" />
 
+        <EditText
+            android:id="@+id/serverTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            android:text="10.101.51.29" />
+
         <ImageView
             android:id="@+id/img_finger"
             android:layout_width="match_parent"

@@ -24,10 +24,6 @@ public class Model {
         return preferences.getString(key, "");
     }
 
-    public static void login(){
-        Log.d(TAG, "login()");
-
-    }
 
     public static String parseJSON(String json) {
         String out = json;
