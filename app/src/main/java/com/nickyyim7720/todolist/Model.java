@@ -18,8 +18,9 @@ public class Model {
         editor.putString(key, value);
         editor.commit();
     }
+
     public static String getPref(String key, Context context) {
-        Log.d(TAG, "getPref(key=" + key + ",Context=" + context+")");
+        Log.d(TAG, "getPref(key=" + key + ",Context=" + context + ")");
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         return preferences.getString(key, "");
     }

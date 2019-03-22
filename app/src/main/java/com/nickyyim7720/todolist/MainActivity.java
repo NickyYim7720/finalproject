@@ -13,7 +13,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
     private static String TAG = "MainActivity===>";
-    private String login_code;
+    private String login_code, user_name, fp_code;
     private FragmentTransaction ft;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -49,20 +49,23 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        Model.setPref("Uname", "1", getApplicationContext());
         init();
     }
 
     private void init(){
+        Log.d(TAG, "init()");
         login_code = Model.getPref("LOGIN_CODE", getApplicationContext());
-        Log.d(TAG, "login_code = " + Model.getPref("LOGIN_CODE", getApplicationContext()));
-        if (login_code.matches("") || login_code.matches("0")){
+        Log.d(TAG, "login_code = " + login_code);
+        user_name = Model.getPref("UNAME", getApplicationContext());
+        Log.d(TAG, "user_name = " + user_name);
+        //fp_code = Model.getPref("fp_code", getApplicationContext());
+        if (login_code.matches("") || login_code.matches("0") || user_name.matches("") /* || fp_code.matches("")*/ ){
             Model.setPref("LOGIN_CODE", "0", getApplicationContext());
             login_code = "0";
             startActivity(new Intent(this, LoginActivity.class));
-        }else if (login_code.matches("1")){
+        }else{
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(R.id.fragment_container, new HomeFragment());
+            ft.add(R.id.fragment_container, new HomeFragment(user_name));
             ft.commit();
         }
     }
