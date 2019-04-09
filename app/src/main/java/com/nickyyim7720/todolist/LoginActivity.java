@@ -136,6 +136,7 @@ public class LoginActivity extends AppCompatActivity {
         if (netInfo != null && netInfo.isConnected()) {
             Log.d(TAG, "login()->network OK");
             String _fp_code = "4321";
+            Model.setPref("SERVER", server.getText().toString(), getApplicationContext());
             String _address = server.getText().toString();
             String _server = "http://" + _address + "/php/login.php";
             Log.d(TAG, "server path = " + _server);
@@ -143,12 +144,7 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 new loginAST(getApplicationContext()).execute(_server, _fp_code);
                 Log.d(TAG, Model.getPref("LOGIN_CODE", getApplicationContext()));
-               /*if (Model.getPref("LOGIN_CODE", getApplicationContext()).matches("1")){
-                   startActivity(new Intent(this, MainActivity.class));
-                   this.finish();
-               }else{
 
-               }*/
             } catch (SecurityException e) {
                 e.printStackTrace();
             }
