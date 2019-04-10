@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="number"
-            android:text="10.101.51.29" />
+            android:text="192.168.8.8" />
 
         <ImageView
             android:id="@+id/img_finger"

@@ -3,20 +3,19 @@ package com.nickyyim7720.todolist;
 import android.Manifest;
 import android.app.KeyguardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CancellationSignal;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.content.Intent;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -137,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
             Log.d(TAG, "login()->network OK");
             String _fp_code = "4321";
             Model.setPref("SERVER", server.getText().toString(), getApplicationContext());
-            String _address = server.getText().toString();
+            String _address = Model.getPref("SERVER", getApplicationContext());
             String _server = "http://" + _address + "/php/login.php";
             Log.d(TAG, "server path = " + _server);
 
@@ -240,13 +239,16 @@ public class LoginActivity extends AppCompatActivity {
                 if ((String.valueOf(jsonO.optString("STATUS")).matches("1"))) {
                     String _status = jsonO.optString("STATUS");
                     String _name = jsonO.optString("NAME");
+                    String _uid = jsonO.optString("UID");
                     String _message = jsonO.optString("MESSAGE");
 
                     //Update Shared Preferences
-                    Model.setPref("LOGIN_CODE", _status, context.getApplicationContext());
-                    Log.d(TAG, "loginAST->login_code = " + Model.getPref("LOGIN_CODE", context.getApplicationContext()));
-                    Model.setPref("UNAME", _name, context.getApplicationContext());
-                    Log.d(TAG, "loginAST->user_name = " + Model.getPref("UNAME", context.getApplicationContext()));
+                    Model.setPref("LOGIN_CODE", _status, getApplicationContext());
+                    Log.d(TAG, "loginAST->login_code = " + Model.getPref("LOGIN_CODE", getApplicationContext()));
+                    Model.setPref("UNAME", _name, getApplicationContext());
+                    Log.d(TAG, "loginAST->user_name = " + Model.getPref("UNAME", getApplicationContext()));
+                    Model.setPref("UID", _uid, getApplicationContext());
+                    Log.d(TAG, "loginAST->user_id = " + Model.getPref("UID", getApplicationContext()));
 
                     //Popup message for user
                     Toast.makeText(context.getApplicationContext(), _message, Toast.LENGTH_SHORT).show();

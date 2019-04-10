@@ -4,9 +4,7 @@ import java.util.Date;
 
 public class ListData {
 
-    private String title;
-    private int urgent;
-    private String content;
+    private String title, urgent, content;
     private Date date;
 
     //---Constructor
@@ -14,9 +12,11 @@ public class ListData {
 
     }
 
-    public ListData(String title, int urgent) {
+    public ListData(String title, String urgent, String content, Date date) {
         this.title = title;
         this.urgent = urgent;
+        this.content = content;
+        this.date = date;
     }
 
     //---getter and setter
@@ -27,10 +27,10 @@ public class ListData {
         return title;
     }
 
-    public void setUrgent(int urg){
+    public void setUrgent(String urg){
         urgent = urg;
     }
-    public int getUrgent(){
+    public String getUrgent(){
         return urgent;
     }
 

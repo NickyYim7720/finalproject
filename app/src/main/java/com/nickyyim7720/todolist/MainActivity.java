@@ -7,13 +7,14 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,14 +29,18 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import org.json.JSONArray;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class MainActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
     private static String TAG = "MainActivity===>";
     private String login_code, user_name, fp_code;
     private FragmentTransaction ft;
-    public ListData listData;
+    private ListData listData[];
+    private String title, content, urgent, date;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -45,9 +50,11 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     mTextMessage.setText(R.string.PI);
+                    loadHomeFrag();
                     return true;
                 case R.id.navigation_list:
                     mTextMessage.setText(R.string.ToDoList);
+                    downloadList();
                     return true;
                 case R.id.navigation_notifications:
                     mTextMessage.setText(R.string.Setting);
@@ -92,20 +99,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadHomeFrag() {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft = getSupportFragmentManager().beginTransaction();
         ft.add(R.id.fragment_container, new HomeFragment(user_name));
         ft.commit();
     }
 
     private void loadListFrag() {
-        int size = names.length;
-        Log.d(TAG, "size=" + size);
-        ListData listData[] = new ListData[size];
-        for (int i = 0; i < size; i++) {
-            String title =
-        }
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.fragment_container, new ListFragment(user_name));
+        ListAdapter listAdapter = new ListAdapter(listData);
+        ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.fragment_container, new ListFragment(listAdapter));
         ft.commit();
     }
 
@@ -115,19 +117,13 @@ public class MainActivity extends AppCompatActivity {
         NetworkInfo netInfo = connManager.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnected()) {
             Log.d(TAG, "login()->network OK");
-            String _fp_code = "4321";
+            String _uid = Model.getPref("UID", getApplicationContext());
             String _address = Model.getPref("SERVER", getApplicationContext());
             String _server = "http://" + _address + "/php/dl_list.php";
             Log.d(TAG, "server path = " + _server);
 
             try {
-                new MainActivity.dl_ListAST(getApplicationContext()).execute(_server, _fp_code);
-               /*if (Model.getPref("LOGIN_CODE", getApplicationContext()).matches("1")){
-                   startActivity(new Intent(this, MainActivity.class));
-                   this.finish();
-               }else{
-
-               }*/
+                new MainActivity.dl_ListAST(getApplicationContext()).execute(_server, _uid);
             } catch (SecurityException e) {
                 e.printStackTrace();
             }
@@ -141,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "logout()");
         Model.setPref("LOGIN_CODE", "0", getApplicationContext());
         Model.setPref("UNAME", "", getApplicationContext());
+        Model.setPref("UID", "", getApplicationContext());
         startActivity(new Intent(this, LoginActivity.class));
     }
 
@@ -162,11 +159,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             String _server = params[0];
-            String _fp_code = params[1];
+            String _uid = params[1];
             int response_code;
             String response = "";
 
-            Log.d(TAG, "dl_ListAST->_server = " + _server + ", _fp_code = " + _fp_code);
+            Log.d(TAG, "dl_ListAST->_server = " + _server + ", _uid = " + _uid);
 
             try {
                 URL url = new URL(_server);
@@ -177,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
                 httpURLC.setDoInput(true);
 
                 //set POST data
-                String data = URLEncoder.encode("fp_code", "UTF-8") + "=" + URLEncoder.encode(_fp_code, "UTF-8");
+                String data = URLEncoder.encode("uid", "UTF-8") + "=" + URLEncoder.encode(_uid, "UTF-8");
 
                 //send POST data
                 OutputStream outputS = httpURLC.getOutputStream();
@@ -224,29 +221,39 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             //JSON Parse
             result = Model.parseJSON(result);
+            Log.d(TAG, "parse JSON");
             try {
                 JSONObject jsonO = new JSONObject(result);
                 if ((String.valueOf(jsonO.optString("STATUS")).matches("1"))) {
-                    //String _status = jsonO.optString("STATUS");
-                    //String _title = jsonO.optString("TITLE");
-                    //String _content = jsonO.optString("CONTENT");
                     String _message = jsonO.optString("MESSAGE");
-                    JSONArray jarray = jsonO.getJSONArray("list");
-                    for (int i = 0; i<jarray.length(); i++){
+                    Log.d(TAG, _message);
+                    JSONArray jarray = jsonO.getJSONArray("todo");
+                    //Set the parameters for looping
+                    int size = jarray.length();
+                    ListData list[] = new ListData[size];
+                    //Converse String date to date format
+                    Date convDate;
+                    SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                    ParsePosition pos = new ParsePosition(0);
+                    for (int i = 0; i<size; i++){
                         JSONObject object = jarray.getJSONObject(i);
-                        ListData list = new ListData();
-                        list.setTitle(object.getString("title"));
-                        list.setContent(object.getString("content"));
-                        //list.setUrgent(object.getInt("urgent"));
-                        //list.setDate(object.getString("date"));
+                        title = object.getString("TITLE");
+                        content = object.getString("CONTENT");
+                        urgent = object.getString("URGENT");
+                        date = object.getString("date");
+                        convDate = format.parse(date, pos);
+                        list[i] = new ListData(title, urgent, content, convDate);
                     }
-                    //put the values into listData
+                    //put the list into listData
+                    listData = list;
+                    loadListFrag();
 
                     //Popup message for user
                     Toast.makeText(context.getApplicationContext(), _message, Toast.LENGTH_SHORT).show();
 
                 } else {
                     String _message = jsonO.optString("MESSAGE");
+                    Log.d(TAG, _message);
 
                     //Popup message for user
                     Toast.makeText(context.getApplicationContext(), _message, Toast.LENGTH_SHORT).show();
