@@ -29,9 +29,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentTransaction ft;
     private ListData listData[];
     private String title, content, urgent, date;
+    private int id;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -56,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
                     mTextMessage.setText(R.string.ToDoList);
                     downloadList();
                     return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.Setting);
+                case R.id.navigation_upload:
+                    openUploadPage();
                     return true;
                 case R.id.navigation_logout:
                     logout();
@@ -91,23 +89,34 @@ public class MainActivity extends AppCompatActivity {
             Model.setPref("LOGIN_CODE", "0", getApplicationContext());
             login_code = "0";
             startActivity(new Intent(this, LoginActivity.class));
+            this.finish();
         } else {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft = getSupportFragmentManager().beginTransaction();
             ft.add(R.id.fragment_container, new HomeFragment(user_name));
             ft.commit();
         }
     }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+        init();
+    }
+    private void openUploadPage(){
+        startActivity(new Intent(this, UploadActivity.class));
+    }
     private void loadHomeFrag() {
+        Log.d(TAG, "loadHomeFrag()");
         ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.fragment_container, new HomeFragment(user_name));
+        ft.replace(R.id.fragment_container, new HomeFragment(user_name));
         ft.commit();
     }
 
     private void loadListFrag() {
+        Log.d(TAG, "loadListFrag()");
         ListAdapter listAdapter = new ListAdapter(listData);
         ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.fragment_container, new ListFragment(listAdapter));
+        ft.replace(R.id.fragment_container, new ListFragment(listAdapter));
         ft.commit();
     }
 
@@ -116,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = connManager.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnected()) {
-            Log.d(TAG, "login()->network OK");
+            Log.d(TAG, "downloadList()->network OK");
             String _uid = Model.getPref("UID", getApplicationContext());
             String _address = Model.getPref("SERVER", getApplicationContext());
             String _server = "http://" + _address + "/php/dl_list.php";
@@ -127,20 +136,21 @@ public class MainActivity extends AppCompatActivity {
             } catch (SecurityException e) {
                 e.printStackTrace();
             }
+
         } else {
             Log.d(TAG, "no network");
             Toast.makeText(this, getResources().getString(R.string.msg_network_disconnect), Toast.LENGTH_SHORT).show();
         }
     }
+
     // ==== Logout ====
     public void logout() {
         Log.d(TAG, "logout()");
         Model.setPref("LOGIN_CODE", "0", getApplicationContext());
         Model.setPref("UNAME", "", getApplicationContext());
         Model.setPref("UID", "", getApplicationContext());
-        startActivity(new Intent(this, LoginActivity.class));
+        init();
     }
-
 
     public class dl_ListAST extends AsyncTask<String, Void, String> {
 
@@ -159,11 +169,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             String _server = params[0];
-            String _uid = params[1];
+            String _id = params[1];
             int response_code;
             String response = "";
 
-            Log.d(TAG, "dl_ListAST->_server = " + _server + ", _uid = " + _uid);
+            Log.d(TAG, "dl_ListAST->_server = " + _server + ", _uid = " + _id);
 
             try {
                 URL url = new URL(_server);
@@ -174,7 +184,8 @@ public class MainActivity extends AppCompatActivity {
                 httpURLC.setDoInput(true);
 
                 //set POST data
-                String data = URLEncoder.encode("uid", "UTF-8") + "=" + URLEncoder.encode(_uid, "UTF-8");
+                String data = URLEncoder.encode("uid", "UTF-8") + "=" + URLEncoder.encode(_id, "UTF-8");
+
 
                 //send POST data
                 OutputStream outputS = httpURLC.getOutputStream();
@@ -231,25 +242,24 @@ public class MainActivity extends AppCompatActivity {
                     //Set the parameters for looping
                     int size = jarray.length();
                     ListData list[] = new ListData[size];
-                    //Converse String date to date format
-                    Date convDate;
-                    SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-                    ParsePosition pos = new ParsePosition(0);
                     for (int i = 0; i<size; i++){
                         JSONObject object = jarray.getJSONObject(i);
+                        id = Integer.parseInt(object.getString("ID"));
                         title = object.getString("TITLE");
                         content = object.getString("CONTENT");
                         urgent = object.getString("URGENT");
-                        date = object.getString("date");
-                        convDate = format.parse(date, pos);
-                        list[i] = new ListData(title, urgent, content, convDate);
+                        date = object.getString("DATE");
+                        list[i] = new ListData(id, title, urgent, content, date);
                     }
                     //put the list into listData
                     listData = list;
-                    loadListFrag();
+                    Log.d(TAG, "listData = " + listData);
 
                     //Popup message for user
                     Toast.makeText(context.getApplicationContext(), _message, Toast.LENGTH_SHORT).show();
+
+                    //load list fragment
+                    loadListFrag();
 
                 } else {
                     String _message = jsonO.optString("MESSAGE");

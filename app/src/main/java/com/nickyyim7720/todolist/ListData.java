@@ -1,25 +1,31 @@
 package com.nickyyim7720.todolist;
 
-import java.util.Date;
-
 public class ListData {
 
-    private String title, urgent, content;
-    private Date date;
+    private String title, urgent, content, date;
+    private int id;
 
     //---Constructor
     public ListData(){
 
     }
 
-    public ListData(String title, String urgent, String content, Date date) {
+    public ListData(int id, String title, String urgent, String content, String date) {
+        this.id = id;
         this.title = title;
         this.urgent = urgent;
         this.content = content;
         this.date = date;
+
     }
 
     //---getter and setter
+    public void setId(int id){
+        this.id = id;
+    }
+    public int getId(){
+        return id;
+    }
     public void setTitle(String tit) {
         title = tit;
     }
@@ -41,10 +47,10 @@ public class ListData {
         return content;
     }
 
-    public void setDate(Date dat){
+    public void setDate(String dat){
         date = dat;
     }
-    public Date getDate(){
+    public String getDate(){
         return date;
     }
     //---End getter and setter

@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
     public void init(String loginCode) {
         if (loginCode.matches("1")) {
             startActivity(new Intent(this, MainActivity.class));
-            this.finish();
+            finish();
         } else {
             if (!kygM.isKeyguardSecure()) {
                 //check the fingerprint screen lock able
@@ -121,12 +121,7 @@ public class LoginActivity extends AppCompatActivity {
 
     };
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        cancellationSignal.cancel();
-        cancellationSignal = null;
-    }
+
 
     public void login() {
         Log.d(TAG, "login()");
@@ -142,7 +137,6 @@ public class LoginActivity extends AppCompatActivity {
 
             try {
                 new loginAST(getApplicationContext()).execute(_server, _fp_code);
-                Log.d(TAG, Model.getPref("LOGIN_CODE", getApplicationContext()));
 
             } catch (SecurityException e) {
                 e.printStackTrace();

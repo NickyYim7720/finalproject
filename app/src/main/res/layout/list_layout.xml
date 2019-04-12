@@ -9,7 +9,7 @@
         android:layout_height="@dimen/image_height"
         android:layout_weight="0"
         android:contentDescription="@string/contentDesc"
-        android:src="@android:drawable/star_big_on" />
+        android:src="@android:drawable/star_big_off" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,10 +19,11 @@
 
         <TextView
             android:id="@+id/item_date"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@android:color/darker_gray"
+            android:text="@string/def_date"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="@dimen/item_textsize" />
 
         <TextView
@@ -30,7 +31,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:textColor="@android:color/darker_gray"
+            android:text="@string/def_title"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="@dimen/item_textsize" />
 
         <TextView
@@ -38,7 +40,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:textColor="@android:color/darker_gray"
+            android:text="@string/def_content"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="@dimen/item_textsize" />
 
     </LinearLayout>

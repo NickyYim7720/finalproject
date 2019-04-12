@@ -1,22 +1,35 @@
 <resources>
     <string name="app_name">ToDoList</string>
     <string name="menu_home">Home</string>
-    <string name="menu_notifications">Notifications</string>
+    <string name="menu_upload">Upload</string>
     <string name="menu_list">List</string>
     <string name="menu_logout">Logout</string>
     <string name="contentDesc">TODO</string>
     <string name="msg_network_disconnect">Network is disconnected</string>
-    <string name="fp_hints">Place your finger on the picture</string>
+    <string name="fp_hints">Login with your fingerprint.</string>
     <string name="fp_lock_disable">Your smartphone have not setting the fingerprint lock</string>
     <string name="fp_hardware_disable">Your smartphone have not install the fingerprint lock</string>
     <string name="fp_record_null">Your smartphone have not set the fingerprint record</string>
 
     <string name="PI">Persional Information</string>
-    <string name="ToDoList">What you have to do</string>
+    <string name="ToDoList">Your todo list</string>
     <string name="Setting">Setting</string>
+    <string name="Upload">Upload record</string>
     <string name="user_name">Guest</string>
     <string name="fp_code">-</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!--Default list view text -->
+    <string name="def_title">title</string>
+    <string name="def_urgent">N</string>
+    <string name="def_date">date</string>
+    <string name="def_content">content</string>
+
+    <!-- upload page -->
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="title">Title</string>
+    <string name="content">Content</string>
+    <string name="urgent">Urgent</string>
+    <string name="btn_sub">Submit</string>
+
 </resources>

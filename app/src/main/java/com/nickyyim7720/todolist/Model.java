@@ -1,7 +1,8 @@
 package com.nickyyim7720.todolist;
 
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -31,6 +32,23 @@ public class Model {
         Log.d(TAG, "parseJson(in)->" + json);
         Log.d(TAG, "parseJson(out)->" + out);
         return out;
+    }
+
+
+    public static void showDialog(Context context, String title, String content){
+        Log.d(TAG, "showDialog()");
+        //Show a dialog for user check the details
+        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(content);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
 }
 
