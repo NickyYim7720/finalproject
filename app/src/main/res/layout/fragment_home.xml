@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/darker_gray"
-    tools:context=".HomeFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@android:color/darker_gray"
+        tools:context=".HomeFragment"
         android:orientation="vertical">
 
         <ImageView
@@ -19,6 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="322dp"
             android:contentDescription="@string/contentDesc"
+            android:src="@mipmap/ic_launcher_round"
             tools:src="@tools:sample/avatars[0]" />
 
         <TextView
@@ -44,5 +40,3 @@
             android:textSize="18sp" />
 
     </LinearLayout>
-
-</FrameLayout>

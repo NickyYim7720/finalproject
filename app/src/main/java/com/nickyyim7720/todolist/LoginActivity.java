@@ -11,6 +11,8 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CancellationSignal;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.EditText;
@@ -31,18 +33,22 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
 public class LoginActivity extends AppCompatActivity {
 
     private static String TAG = "LoginActivity===>";
-    private String login_code;
+    String login_code;
     private FingerprintManager fpM;
     private KeyguardManager kygM;
     private CancellationSignal cancellationSignal;
-    private TextView txtV;
-    private EditText server;
+    EditText server, txtuname, txtPasswd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +61,8 @@ public class LoginActivity extends AppCompatActivity {
 
         kygM = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
         fpM = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
+        txtuname = (EditText)findViewById(R.id.txtUname);
+        txtPasswd = (EditText)findViewById(R.id.txtPasswd);
 
         init(Model.getPref("LOGIN_CODE", getApplicationContext()));
 
@@ -91,6 +99,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+
     private void startFingerprintListening() {
         cancellationSignal = new CancellationSignal();
         if (checkSelfPermission(Manifest.permission.USE_FINGERPRINT) == PackageManager.PERMISSION_GRANTED) {
@@ -122,21 +131,21 @@ public class LoginActivity extends AppCompatActivity {
     };
 
 
-
     public void login() {
         Log.d(TAG, "login()");
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = connManager.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnected()) {
             Log.d(TAG, "login()->network OK");
-            String _fp_code = "4321";
+            String _uname = txtuname.getText().toString();
+            String _passwd = txtPasswd.getText().toString();
             Model.setPref("SERVER", server.getText().toString(), getApplicationContext());
             String _address = Model.getPref("SERVER", getApplicationContext());
             String _server = "http://" + _address + "/php/login.php";
             Log.d(TAG, "server path = " + _server);
 
             try {
-                new loginAST(getApplicationContext()).execute(_server, _fp_code);
+                new loginAST(getApplicationContext()).execute(_server, _uname, _passwd);
 
             } catch (SecurityException e) {
                 e.printStackTrace();
@@ -166,11 +175,12 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             String _server = params[0];
-            String _fp_code = params[1];
+            String _uname = params[1];
+            String _passwd = params[2];
             int response_code;
             String response = "";
 
-            Log.d(TAG, "loginAST->_server = " + _server + ", _fp_code = " + _fp_code);
+            Log.d(TAG, "loginAST->_server = " + _server + ", _uname = " + _uname + ", _passwd = " + _passwd);
 
             try {
                 URL url = new URL(_server);
@@ -181,7 +191,8 @@ public class LoginActivity extends AppCompatActivity {
                 httpURLC.setDoInput(true);
 
                 //set POST data
-                String data = URLEncoder.encode("fp_code", "UTF-8") + "=" + URLEncoder.encode(_fp_code, "UTF-8");
+                String data = URLEncoder.encode("uname", "UTF-8") + "=" + URLEncoder.encode(_uname, "UTF-8");
+                data += "&" + URLEncoder.encode("passwd", "UTF-8") + "=" + URLEncoder.encode(_passwd, "UTF-8");
 
                 //send POST data
                 OutputStream outputS = httpURLC.getOutputStream();

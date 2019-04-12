@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        init();
     }
     private void openUploadPage(){
         startActivity(new Intent(this, UploadActivity.class));
