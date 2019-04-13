@@ -11,12 +11,9 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CancellationSignal;
-import android.security.keystore.KeyGenParameterSpec;
-import android.security.keystore.KeyProperties;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -33,11 +30,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 
 import static android.widget.Toast.LENGTH_SHORT;
 

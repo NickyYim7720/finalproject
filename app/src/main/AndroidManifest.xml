@@ -13,14 +13,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UploadActivity"
-            android:theme="@style/Theme.AppCompat.Dialog"
-            android:excludeFromRecents="true" />
-
-        <activity android:name=".LoginActivity"
-            android:theme="@style/DialogStyle"
-            android:excludeFromRecents="true" />
-
+        <activity
+            android:name=".UploadActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.AppCompat.Dialog" />
+        <activity
+            android:name=".LoginActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/DialogStyle" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
@@ -32,4 +32,6 @@
         </activity>
     </application>
 
+    <!--  <action android:name="android.intent.action.MAIN" /> -->
+    <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
 </manifest>

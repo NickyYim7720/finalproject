@@ -12,9 +12,9 @@
     <string name="fp_record_null">Your smartphone have not set the fingerprint record</string>
 
     <!--Login string values -->
-    <string name="serverIP">10.101.51.41</string>
-    <string name="uname">User Name</string>
-    <string name="uPasswd">User Password</string>
+    <string name="serverIP">192.168.8.8</string>
+    <string name="uname">Yim Tsun Ho</string>
+    <string name="uPasswd">1234</string>
 
     <string name="PI">Persional Information</string>
     <string name="ToDoList">Your todo list</string>
