@@ -10,8 +10,9 @@ import android.util.Log;
 public class Model {
 
     private static String TAG = "Model.java===>";
+    public static ListData list[] = null;
 
-    // ==== SharedPreferences ====
+    // ==== SharedPreferences ====//
     public static void setPref(String key, String value, Context context) {
         Log.d(TAG, "setPref(key=" + key + ",value=" + value + ",Context=" + context + ")");
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -26,7 +27,7 @@ public class Model {
         return preferences.getString(key, "");
     }
 
-
+    //==== parse JSON ====//
     public static String parseJSON(String json) {
         String out = json;
         Log.d(TAG, "parseJson(in)->" + json);
@@ -34,6 +35,15 @@ public class Model {
         return out;
     }
 
+    //==== getter and setter for ListData ====//
+    public static void setList(ListData data[]){
+        Log.d(TAG, "setList()->" + data);
+        Model.list = data;
+    }
+
+    public static ListData[] getList(){
+        return Model.list;
+    }
 
     public static void showDialog(Context context, String title, String content){
         Log.d(TAG, "showDialog()");

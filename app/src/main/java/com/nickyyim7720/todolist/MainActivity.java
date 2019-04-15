@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadListFrag() {
         Log.d(TAG, "loadListFrag()");
+        listData = Model.getList();
         ListAdapter listAdapter = new ListAdapter(listData);
         ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragment_container, new ListFragment(listAdapter));
@@ -250,9 +251,9 @@ public class MainActivity extends AppCompatActivity {
                         date = object.getString("DATE");
                         list[i] = new ListData(id, title, urgent, content, date);
                     }
-                    //put the list into listData
-                    listData = list;
-                    Log.d(TAG, "listData = " + listData);
+                    //set the data into Model.list
+                    Model.setList(list);
+                    Log.d(TAG, "list = " + list);
 
                     //Popup message for user
                     Toast.makeText(context.getApplicationContext(), _message, Toast.LENGTH_SHORT).show();
