@@ -16,6 +16,10 @@
         android:icon="@android:drawable/ic_menu_upload"
         android:title="@string/menu_upload" />
     <item
+        android:id="@+id/navigation_web"
+        android:icon="@android:drawable/ic_menu_compass"
+        android:title="@string/menu_web" />
+    <item
         android:id="@+id/navigation_logout"
         android:icon="@android:drawable/ic_secure"
         android:title="@string/menu_logout" />

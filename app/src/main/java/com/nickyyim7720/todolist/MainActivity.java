@@ -1,6 +1,8 @@
 package com.nickyyim7720.todolist;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -11,6 +13,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,6 +60,10 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_upload:
                     openUploadPage();
                     return false;
+                case R.id.navigation_web:
+                    mTextMessage.setText(R.string.Web);
+                    openWebFrag();
+                    return true;
                 case R.id.navigation_logout:
                     logout();
                     return true;
@@ -117,6 +124,15 @@ public class MainActivity extends AppCompatActivity {
         ListAdapter listAdapter = new ListAdapter(listData);
         ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragment_container, new ListFragment(listAdapter));
+        ft.commit();
+    }
+
+    private void openWebFrag(){
+        Log.d(TAG, "openWebFrag()");
+
+        String path = "https://www.leedsbeckett.ac.uk/";
+        ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fragment_container, new WebFragment(path));
         ft.commit();
     }
 

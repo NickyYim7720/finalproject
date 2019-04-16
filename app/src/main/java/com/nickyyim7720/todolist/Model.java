@@ -6,11 +6,13 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.EditText;
 
 public class Model {
 
     private static String TAG = "Model.java===>";
     public static ListData list[] = null;
+    public static String url;
 
     // ==== SharedPreferences ====//
     public static void setPref(String key, String value, Context context) {
@@ -45,6 +47,16 @@ public class Model {
         return Model.list;
     }
 
+    public static void setUrl(String url){
+        Log.d(TAG, "setUrl()");
+        Model.url = url;
+    }
+
+    public static String getUrl(){
+        Log.d(TAG, "getUrl()");
+        return Model.url;
+    }
+
     public static void showDialog(Context context, String title, String content){
         Log.d(TAG, "showDialog()");
         //Show a dialog for user check the details
@@ -60,6 +72,7 @@ public class Model {
                 });
         alertDialog.show();
     }
+
 }
 
 
