@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context=".UploadActivity">
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:src="@android:drawable/btn_dialog"
+        app:fabCustomSize="@dimen/item_width"
+        tools:layout_editor_absoluteX="363dp"
+        tools:layout_editor_absoluteY="715dp" />
+
     <ScrollView
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
-        android:background="@android:color/darker_gray">
+        android:background="@android:color/darker_gray"
+        tools:layout_editor_absoluteY="699dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -94,22 +107,16 @@
                 android:hint="@string/content"
                 android:inputType="textMultiLine" />
 
-            <TextView
-                android:id="@+id/urgentLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/urgent"
-                android:textAlignment="center"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
             <Switch
                 android:id="@+id/urgentSwitch"
-                android:layout_width="319dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:checked="false"
                 android:gravity="center"
-                android:text="@string/urgent" />
+                android:text="@string/urgent"
+                android:textAlignment="textStart"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/btn_sub"
@@ -121,4 +128,4 @@
         </LinearLayout>
     </ScrollView>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mTextMessage.setText(R.string.PI);
+                    mTextMessage.setText(R.string.info);
                     loadHomeFrag();
                     return true;
                 case R.id.navigation_list:
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_upload:
                     openUploadPage();
-                    return true;
+                    return false;
                 case R.id.navigation_logout:
                     logout();
                     return true;
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         user_name = Model.getPref("UNAME", getApplicationContext());
         Log.d(TAG, "user_name = " + user_name);
         //fp_code = Model.getPref("fp_code", getApplicationContext());
-        if (login_code.matches("") || login_code.matches("0") || user_name.matches("") /* || fp_code.matches("")*/) {
+        if (login_code.matches("") || login_code.matches("0") || user_name.matches("")) {
             Model.setPref("LOGIN_CODE", "0", getApplicationContext());
             login_code = "0";
             startActivity(new Intent(this, LoginActivity.class));
@@ -122,25 +122,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void downloadList(){
         Log.d(TAG, "downloadList()");
-        ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = connManager.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnected()) {
-            Log.d(TAG, "downloadList()->network OK");
-            String _uid = Model.getPref("UID", getApplicationContext());
-            String _address = Model.getPref("SERVER", getApplicationContext());
-            String _server = "http://" + _address + "/php/dl_list.php";
-            Log.d(TAG, "server path = " + _server);
+            ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+            NetworkInfo netInfo = connManager.getActiveNetworkInfo();
+            if (netInfo != null && netInfo.isConnected()) {
+                Log.d(TAG, "downloadList()->network OK");
+                String _uid = Model.getPref("UID", getApplicationContext());
+                String _address = Model.getPref("SERVER", getApplicationContext());
+                String _server = "http://" + _address + "/php/dl_list.php";
+                Log.d(TAG, "server path = " + _server);
 
-            try {
-                new MainActivity.dl_ListAST(getApplicationContext()).execute(_server, _uid);
-            } catch (SecurityException e) {
-                e.printStackTrace();
+                try {
+                    new MainActivity.dl_ListAST(getApplicationContext()).execute(_server, _uid);
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                Log.d(TAG, "no network");
+                Toast.makeText(this, getResources().getString(R.string.msg_network_disconnect), Toast.LENGTH_SHORT).show();
             }
-
-        } else {
-            Log.d(TAG, "no network");
-            Toast.makeText(this, getResources().getString(R.string.msg_network_disconnect), Toast.LENGTH_SHORT).show();
-        }
     }
 
     // ==== Logout ====

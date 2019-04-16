@@ -12,13 +12,12 @@
     <string name="fp_record_null">Your smartphone have not set the fingerprint record</string>
 
     <!--Login string values -->
-    <string name="serverIP">192.168.8.8</string>
+    <string name="serverIP">192.168.8.5</string>
     <string name="uname">Yim Tsun Ho</string>
     <string name="uPasswd">1234</string>
 
-    <string name="PI">Persional Information</string>
+    <string name="info">Persional Information</string>
     <string name="ToDoList">Your todo list</string>
-    <string name="Setting">Setting</string>
     <string name="Upload">Upload record</string>
     <string name="user_name">Guest</string>
     <string name="fp_code">-</string>
